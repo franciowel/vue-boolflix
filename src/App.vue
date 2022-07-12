@@ -1,28 +1,37 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <header>
+      <HeaderPart @search="searchFilm" />
+    </header>
+    <main>
+      <MainContent :text="userText" />
+    </main>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
+import HeaderPart from './components/Headerpart.vue'
+import MainContent from './components/MainContent.vue'
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    HeaderPart,
+    MainContent,
+  },
+  data() {
+    return {
+      userText: '',
+    }
+  },
+  methods: {
+    searchFilm(text) {
+      this.userText = '';
+      this.userText = text;
+    }
   }
 }
 </script>
 
 <style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+@import './assets/style.scss';
 </style>
