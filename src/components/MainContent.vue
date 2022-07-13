@@ -169,7 +169,7 @@ h2 {
     text-align: center;
 }
 li {
-    width: 34 5px;
+    width: 345px;
     height: 515px;
 }
 img {
