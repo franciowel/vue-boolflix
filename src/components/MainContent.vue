@@ -19,6 +19,7 @@
                     <div class="cover">
                         <img :src="`https://image.tmdb.org/t/p/w342/${ item.poster_path }`" :alt="item.title">
                     </div>
+                    <!-- ELEMENTI NASCONTI DA FAR VEDERE HOVER -->
                     <!-- INFORMAZIONI DEL FILM -->
                     <div class="hidden">
                         <h3>{{item.title}}</h3>
@@ -46,8 +47,35 @@
                     </div>
                 </li>
             </ul>
-
+            <!-- SERIE TV -->
             <h2>Serie TV</h2>
+
+            <ul>
+                <li class="text-center" v-for="item, index in tvList" :key="index">
+                    <div class="cover">
+                        <img :src="`https://image.tmdb.org/t/p/w342/${ item.poster_path }`" :alt="item.name">
+                    </div>
+                    <!-- ELEMENTI NASCONTI DA FAR VEDERE HOVER -->
+                    <div class="hidden">
+                        <div class="title">Titolo: {{item.name}}</div>
+                        <div class="title">Titolo originale: {{item.original_name}}</div>
+                        <div v-if="item.original_language == 'en'">Lingua: {{item.original_language}}</div>
+                        <div v-else>
+                            <img
+                            class="flag"
+                            :src="`https://flagcdn.com/16x12/${item.original_language}.png`"
+                            :srcset="`https://flagcdn.com/32x24/${item.original_language}.png 2x,
+                                https://flagcdn.com/48x36/${item.original_language}.png 3x`"
+                            width="20"
+                            :alt="`${item.original_language}`">
+                        </div>
+                        <div class="stars">
+                            <i v-for="n in 5" :key="n" class="fa-regular fa-star" :class="{'gold': n <= voteCalc(item.vote_average) }"></i>
+                        </div>
+                        <div class="overview">{{item.overview}}</div>
+                    </div>
+                </li>
+            </ul>
         </div>
     </div>
 </template>
@@ -71,6 +99,7 @@ export default {
         }
     },
     methods: {
+        // FUNZIONI DI RICERCA FILM
         getFilm() {
             axios.get(this.url).then((result) =>{
                 this.filmList = result.data.results;
@@ -87,6 +116,7 @@ export default {
             this.tvList = [];
             this.getFilm();
         },
+        // FUNZIONI LINGUA 
         selectLang(value) {
             this.userLang = event.target.value;
             this.userLangCapital = this.userLang.toLocaleUpperCase();
@@ -98,6 +128,7 @@ export default {
                 this.langList = result.data;
             });
         },
+        // SISTEMA CALCOLO
         voteCalc(mark) {
             const count = mark / 2;
             return Math.round(count);
@@ -126,7 +157,6 @@ ul {
     justify-content: space-evenly;
     flex-wrap: wrap;
     li {
-        background-color: black;
         color: white;
         margin: 15px;
         width: 250px;
@@ -139,7 +169,7 @@ h2 {
     text-align: center;
 }
 li {
-    width: 345px;
+    width: 34 5px;
     height: 515px;
 }
 img {
