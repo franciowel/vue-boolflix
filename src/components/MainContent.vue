@@ -3,21 +3,28 @@
 
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-        <div class="container">
+        <div class="contain">
 
-            <div class="d-flex justify-content-center">
-                Lingua: 
-                <select @change="selectLang" name="lang" id="lang">
-                    <option v-for="item, index in langList" :key="index" :value="item.iso_639_1">{{item.english_name}}</option>
-                </select>
+            <div class="lang-contain">
+
+                <div class="d-flex justify-content-center align-items-center">
+                    <span>Lingua:</span> 
+                    <select @change="selectLang" name="lang" id="lang">
+                        <option v-for="item, index in langList" :key="index" :value="item.iso_639_1">{{item.english_name}}</option>
+                    </select>
+                </div>
+
             </div>
 
             <h2>Film</h2>
             <ul>
-                <li class="text-center" v-for="item, index in filmList" :key="index">
+                <li v-for="item, index in filmList" :key="index">
 
                     <div class="cover">
-                        <img :src="`https://image.tmdb.org/t/p/w342/${ item.poster_path }`" :alt="item.title">
+                        <div class="not-found" v-if="item.poster_path == null">
+                            immagine non trovata
+                        </div>
+                        <img v-else :src="`https://image.tmdb.org/t/p/w342${ item.poster_path }`" :alt="item.name">
                     </div>
                     <!-- ELEMENTI NASCONTI DA FAR VEDERE HOVER -->
                     <!-- INFORMAZIONI DEL FILM -->
@@ -30,18 +37,14 @@
                             <img
                             class="flag"
                             :src="`https://flagcdn.com/16x12/${item.original_language}.png`"
-                            :srcset="`https://flagcdn.com/32x24/${item.original_language}.png 2x,
-                                    https://flagcdn.com/48x36/${item.original_language}.png 3x`"
                             width="20"
                             :alt="`${item.original_language}`">
                         </div>
                         <!-- VALUTAZIONE -->
-                        <!-- <div>Voto: {{item.vote_average}}</div> -->
-
                         <div class="stars">
                             <i v-for="n in 5" :key="n" class="fa-regular fa-star" :class="{'gold': n <= voteCalc(item.vote_average) }"></i>
                         </div>
-
+                        <!-- TRAMA -->
                         <div class="overview">{{item.overview}}</div>
 
                     </div>
@@ -51,9 +54,12 @@
             <h2>Serie TV</h2>
 
             <ul>
-                <li class="text-center" v-for="item, index in tvList" :key="index">
+                <li v-for="item, index in tvList" :key="index">
                     <div class="cover">
-                        <img :src="`https://image.tmdb.org/t/p/w342/${ item.poster_path }`" :alt="item.name">
+                        <div class="not-found" v-if="item.poster_path == null">
+                            immagine non trovata
+                        </div>
+                        <img v-else :src="`https://image.tmdb.org/t/p/w342${ item.poster_path }`" :alt="item.name">
                     </div>
                     <!-- ELEMENTI NASCONTI DA FAR VEDERE HOVER -->
                     <div class="hidden">
@@ -64,8 +70,7 @@
                             <img
                             class="flag"
                             :src="`https://flagcdn.com/16x12/${item.original_language}.png`"
-                            :srcset="`https://flagcdn.com/32x24/${item.original_language}.png 2x,
-                                https://flagcdn.com/48x36/${item.original_language}.png 3x`"
+                            
                             width="20"
                             :alt="`${item.original_language}`">
                         </div>
@@ -110,8 +115,8 @@ export default {
         },
         searchFilm() {
             this.userText = this.text;
-            this.url = `https://api.themoviedb.org/3/search/movie?api_key=f2faa276f128d7e15803d0612da76a93&language=${this.userLang}-${this.userLangCapital}&query=${this.text}&page=1&include_adult=false`;
-            this.urlTv = `https://api.themoviedb.org/3/search/tv?page=1&query=${this.userText}&include_adult=false&api_key=f2faa276f128d7e15803d0612da76a93&language=${this.userLang}-${this.userLangCapital}`;
+            this.url = `https://api.themoviedb.org/3/search/movie?api_key=f2faa276f128d7e15803d0612da76a93&language=${this.userLang}-${this.userLangCapital}&query=${this.text}&page=1&include_adult=true`;
+            this.urlTv = `https://api.themoviedb.org/3/search/tv?page=1&query=${this.userText}&include_adult=true&api_key=f2faa276f128d7e15803d0612da76a93&language=${this.userLang}-${this.userLangCapital}`;
             this.filmList = [];
             this.tvList = [];
             this.getFilm();
@@ -122,6 +127,21 @@ export default {
             this.userLangCapital = this.userLang.toLocaleUpperCase();
             console.log(value)
             this.searchFilm();
+        },
+        CountryFlag(flag) {
+            if(flag == 'en'){
+                return "gb";
+            } else if(flag == 'ja'){
+                return "jp";
+            } else if(flag == 'hi'){
+                return "in";
+            } else if(flag == 'cs'){
+                return "cz";
+            } else if(flag == 'ko'){
+                return "kr";
+            } else if(flag == 'sv'){
+                return "ch";
+            } return flag
         },
         getLang() {
             axios.get(this.langUrl).then((result) =>{
@@ -150,6 +170,21 @@ export default {
 @import '../assets/style.scss';
 .back {
     background-color: grey;
+    height: 100%;
+    width: 100%;
+}
+.contain{
+    width: 80%;
+    margin: 0 auto;
+}
+.lang-contain{
+    height: 80px;
+    line-height: 80px;
+    span{
+        font-size: 1.2rem;
+        color: white;
+        margin-right: 0.5rem;
+    }
 }
 ul {
     list-style-type: none;
@@ -158,8 +193,9 @@ ul {
     flex-wrap: wrap;
     li {
         color: white;
-        margin: 15px;
-        width: 250px;
+        margin: 25px 15px;
+        width: 342px;
+        height: 500px;
     }
 }
 h2 {
@@ -168,21 +204,16 @@ h2 {
     font-size: 35px;
     text-align: center;
 }
-li {
-    width: 345px;
-    height: 515px;
-}
 img {
     width: 342px;
     max-width: 342px;
-    height: 513px;
+    height: 500px;
 }
 .gold {
     color: yellow;
 }
 .stars {
-    font-size: 20px;
-    margin: 15px;
+    font-size: 1.2rem;
 }
 li:hover {
     .cover {
@@ -219,8 +250,8 @@ li:hover {
 }
 .hidden {
     display: none;
-    max-height: 515px;
-    max-width: 345px;
+    max-height: 500px;
+    max-width: 342px;
     overflow-y: auto;
 }
 </style>

@@ -5,7 +5,7 @@
                 <h2>BOOLFLIX</h2>
                 <div class="ms_input">
                     <input v-model="userSearch" type="text" name="search" id="search">
-                    <button @click="$emit('search', userSearch)" class="btn-primary">Search</button>
+                    <button @click="$emit('search', userSearch)" class="btn-danger">Search</button>
                 </div>
             </div>
         </div>
@@ -43,10 +43,14 @@ h2 {
     padding: 5px 0;
     input {
         font-size: 1rem;
+        border: 1px solid #dc3545;
     }
     button {
         font-size: 1rem;
         text-transform: uppercase;
+        border-top-right-radius: 25px;
+        border-bottom-right-radius: 25px;
+        border: 1px solid #dc3545;
     }
 }
 </style>
